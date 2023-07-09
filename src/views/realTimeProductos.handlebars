@@ -1,0 +1,21 @@
+<div id ="rtProducts">
+    <div class = "d-flex flex-wrap" id ="rtProducts">
+        {{#each products}}
+            <div class="card mx-2" style="width: 18rem;">
+                <img class="card-img-top" src={{linkThubnail}} alt="Card image cap" style="object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{name}}</h5>
+                    <p class="card-text">{{description}}</p>
+                </div>
+            </div>
+        {{/each}}
+ 
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
+
+
+
+

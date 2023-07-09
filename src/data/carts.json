@@ -1,0 +1,33 @@
+[
+	{
+		"id": 1,
+		"arrayProducts": [
+			{
+				"id": 1,
+				"quantity": 4
+			},
+			{
+				"id": 2,
+				"quantity": 2
+			}
+		]
+	},
+	{
+		"id": 2,
+		"arrayProducts": [
+			{
+				"id": 2,
+				"quantity": 1
+			}
+		]
+	},
+	{
+		"id": 3,
+		"arrayProducts": [
+			{
+				"id": 1,
+				"quantity": 2
+			}
+		]
+	}
+]

@@ -1,0 +1,13 @@
+[
+	{
+		"id": 1,
+		"name": "Disola M 4015",
+		"description": "Tambor x 205",
+		"price": "18000",
+		"code": "1502",
+		"stock": "20",
+		"status": true,
+		"category": "Motor",
+		"thubnail": "/d40.jpg"
+	}
+]
