@@ -4,7 +4,8 @@ import ProductManager from "../dao/modelsFs/ProductManager.js"
 import cartModel from '../dao/models/cart.model.js'
 import productModel from '../dao/models/product.model.js'
 import { comprobateMongoId } from '../utils/utils.js'
-
+import url from 'url'
+import session from 'express-session'
 
 
 const cartsRouter = Router ()
@@ -12,10 +13,12 @@ const cartManager = new CartManager (`./src/data/carts.json`, `utf-8`)
 const productManager = new ProductManager (`./src/data/products.json`, `utf-8`)
 
 
-cartsRouter.post ('/:cid/product/:pid' , async(req,res)=>{
+cartsRouter.post ('/:cid/products/:pid' , async(req,res)=>{
     const productId = req.params.pid
     const cartId = req.params.cid
- 
+    let quantity = req.body.quantity || 1
+    console.log("desde aca")
+
     if (productId!=undefined && cartId != undefined){
         let validateId = comprobateMongoId(productId)
         if (validateId=== true){
@@ -27,14 +30,22 @@ cartsRouter.post ('/:cid/product/:pid' , async(req,res)=>{
                 if (cartdb && productdb){
                     let result =  cartdb.isProductatCard(productId)
                     if (result ===true ){
-                        await cartdb.updateQuantity( productId ,1)
+                        await cartdb.updateQuantity( productId ,quantity)
                         await cartModel.updateOne({'_id': cartId},{$set: { ...cartdb}})
-                        res.status(200).json({status : "success" , message : "Product added at cart"})
+
+                        let cartid = cartdb._id.toString()
+                        let objet = {pathname:'/views/products',query :{cartId :cartid} }
+                        res.status(200).redirect(url.format(objet))
+                        //res.status(200).json({status : "success" , message : "Product added at cart"})
                     }
                     else {
-                        cartdb.products.push(productdb)
+                        
+                        cartdb.products.push({product : productdb._id , quantity : quantity}  )
                         await cartModel.updateOne({'_id': cartId},{$set: { ...cartdb}})
-                        res.status(200).json({status: "Sucess" , message : "Product Added to cart"})
+                        //res.status(200).json({status: "Sucess" , message : "Product Added to cart"})
+                        let cartid = cartdb._id.toString()
+                        let objet = {pathname:'/views/products',query :{cartId :cartid} }
+                        res.status(200).redirect(url.format(objet))
                     }
             }
             }catch (err){
@@ -68,10 +79,10 @@ cartsRouter.put('/:cid' , async(req,res)=>{
     const cartId = req.params.cid
     let arrayProducts = req.body 
     let result = comprobateMongoId(cartId)
+    console.log(req.body)
     if (result === true){
         try{
             let cart = await cartModel.findById(cartId)
-            console.log(cart)
             if (cart){
                 if(arrayProducts){
                     cart.products = arrayProducts
@@ -90,8 +101,9 @@ cartsRouter.put('/:cid' , async(req,res)=>{
 cartsRouter.put('/:cid/product/:pid' , async(req,res)=>{
     const productId = req.params.pid
     const cartId = req.params.cid
-    const productQuantity = req.body
-
+    const productQuantity = req.body.quantity
+   
+ 
     if (productId!=undefined && cartId != undefined){
         let validateId = comprobateMongoId(productId)
         if (validateId=== true){
@@ -118,10 +130,31 @@ cartsRouter.put('/:cid/product/:pid' , async(req,res)=>{
 })
 
 cartsRouter.post ('/', async(req,res)=>{
-    try {
-        cartModel.create({})
-        res.status(200).json ({Status : 'Sucess', Mesagge : 'Cart added'})
+    let productId = req.body.productId
+    let quantity = req.body.quantity
 
+    try {
+      let result = await cartModel.create(
+        {
+            products : [
+                {
+                    product : productId,
+                    quantity:quantity
+                }
+            ]
+        }
+      )
+      let cartid = result._id.toString()
+      console.log(cartid)
+
+      let objet = {
+        pathname:'/views/products',
+        query :{
+            cartId :cartid
+        } 
+      }
+
+      res.status(200).redirect(url.format(objet))
     }catch (err){
         res.json ({status : "error" , message : err.message })
     }
@@ -131,8 +164,7 @@ cartsRouter.get('/:cid',async (req,res)=>{
     try{
         let cartId = req.params.cid
         let cart = await cartModel.findOne({'_id':cartId})
-       
-        res.status(400).json (cart.products)
+        res.status(200).json({cart})
         if(!cart)res.status(200).json ({status :'Fail' , message: 'Cart does not exist'})
     }catch (err){
         res.json ({status : "error" , message : err.message })

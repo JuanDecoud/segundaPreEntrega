@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const messengerCollection = 'messenger'
+const messengerCollection = 'Messenger'
 
 const messengerSchema = new mongoose.Schema({
     userMail : String ,

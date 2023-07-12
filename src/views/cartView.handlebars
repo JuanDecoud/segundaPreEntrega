@@ -1,0 +1,20 @@
+<div class ="container">
+    <div>
+        <h2>Cart info</h2>
+     </div>
+    <div class ="d-inline-flex">
+    {{#each cart.products}}
+        <div class="card mx-2 my-2" >
+            <img class="card-img-top" src={{product.linkThubnail}} alt="Card image cap" style="object-fit: cover;">
+            <ul  class="list-group list-group-flush">
+                <h5 class="card-title"> {{product.name}}</h5>
+                <p class="list-group-item">Envase: {{product.container}}</p>
+                <p class="list-group-item">Litros: {{product.liters}}</p>
+                <p class="list-group-item text-green">$ {{product.price}}</p>
+                <p class ="mx-2">Quantity: {{quantity}}</p>
+                <div class ="list-group-item col-6 "> 
+            </ul>
+        </div>
+    {{/each}}         
+    </div>
+</div>

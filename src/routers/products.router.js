@@ -15,7 +15,7 @@ productRouter.get ('/' ,async (req , res)=>{
    let filter = req.query.filter 
    let sort = req.query.sort 
 
-   let filterOptions= {limit : limit , page : page }
+   let filterOptions= {limit : limit , page : page  , lean :true}
    if (sort !=undefined){
     let optSort = {sort : {price : sort}}
     filterOptions={...filterOptions , ...optSort}
@@ -25,6 +25,8 @@ productRouter.get ('/' ,async (req , res)=>{
 
    try{
         let result = await productModel.paginate(filter, filterOptions)
+        let io = req.app.get('socketio')
+        io.emit('updateProducts' , result)
         res.status(200).send({ message: "Success" ,result :result})
 
    }catch(err){
@@ -35,15 +37,15 @@ productRouter.get ('/' ,async (req , res)=>{
 
 productRouter.post (`/`,uploader.single('file') , async (req,res)=>{
     if (!req.file)res.status (400).json ({message : 'Please, upload product image'})
-    const {name,description,price,code,stock , category} = req.body
+    const {name,description ,brand ,container,price,code,stock , category , liters} = req.body
     console.log(req.body)
-    if (!name || !description || !price || !code || !stock || !category)res.status(400).send ("All fields are required")
+    if (!name || !description ||!container ||!brand || !price || !code || !stock || !category || !liters)res.status(400).send ("All fields are required")
     else {
         try {
             let validate = await productModel.find({code :code})
             if (validate.length ===0){
                 const imgRute = '/'+req.file.filename
-                await productModel.create ({name,description,price,code,stock,status :true,category ,linkThubnail:'/'+req.file.filename})
+                await productModel.create ({name,container,description,brand,price,liters,code,stock,status :true,category ,linkThubnail:'/'+req.file.filename})
                 let products = await productModel.find().lean()
                 let io = req.app.get('socketio')
                 io.emit('updateProducts' , products)

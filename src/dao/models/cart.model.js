@@ -1,40 +1,40 @@
 import mongoose from 'mongoose'
 
 import productModel from './product.model.js'
-const cartCollection = "carts"
+const cartCollection = "Carts"
 
 const cartSchema = new mongoose.Schema({
     products : {
-       type : [
-            {
+       type : [{
                 product: {
+                    _id : false,
                     type : mongoose.Schema.Types.ObjectId,
-                    ref : 'products',
-                    requiered : true
+                    ref : 'products'
                 },
                 quantity : {
                     type:Number,
                     default : 1
                 } 
-            }
-       ],
-       default : []
-    }
+            }],
+            default : []
+        }
 } )
 
 cartSchema.method('isProductatCard' , function(pid){
     let boolean = false
     this.products.forEach(element => {
-        let newid =element._id.toString()
+        console.log(element)
+        let newid =element.product._id.toString()
         if (newid === pid){boolean= true} 
     });
     return boolean 
 })
 
 cartSchema.method('updateQuantity' , function ( pid , quantity){
+    let newQuantity = parseInt(quantity)
     this.products.forEach(element => {
-        let newid =element._id.toString()
-        if (newid === pid)element.quantity+=quantity  
+        let newid =element.product._id.toString()
+        if (newid === pid)element.quantity+=newQuantity  
      })
 })
 
@@ -44,8 +44,8 @@ cartSchema.method ('deleteProduct' , function(pid){
     this.products.splice(index,1)
 })
 
-cartSchema.pre('findOne', function() {
-    this.populate('products.product')
+cartSchema.pre('findOne',  function() {
+     this.populate('products.product')
 })
 
 

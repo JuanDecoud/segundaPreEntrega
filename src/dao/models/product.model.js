@@ -5,8 +5,11 @@ const productCollection = "products"
 
 const productSchema = new mongoose.Schema({
     name : String ,
+    container: String,
     description : String,
-    price: String ,
+    brand : String,
+    price: Number ,
+    liters: String,
     code: {
         type : String ,
         index : true

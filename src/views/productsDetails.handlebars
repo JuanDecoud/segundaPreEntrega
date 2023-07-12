@@ -1,0 +1,37 @@
+<div class ="container-fluid">
+    <div class ="d-flex">
+        <div class ="d-flex">
+            <div class ="container">
+                <h3>{{name}}</h3>
+            </div>
+            <div>
+                <h3>{{brand}}</h3>
+            </div>
+            <div class ="container">
+                <img src="{{linkThubnail}}" alt="">
+            </div>
+        </div>
+        <div  class ="container">
+            <h5>Brand</h5>
+            <p>YPF</p>
+            <h5>Container</h5>
+            <p>{{container}}</p>
+            <h5>Descripcion</h5>
+            <p>{{description}}</p>
+            <h5>Price</h5>
+            <p>{{price}}</p>
+        </div>
+    </div>
+    {{#if cartId}}
+    <form action="/carts/{{cartId}}/products/{{_id}}" method="post">
+        <input type="hidden" name="productId" value ="{{_id}}">
+        <input type="hidden" name="cartId" value ="{{cartId}}">
+        <button type ="submit" class ="btn btn-sm btn-danger mx-2 my-2">Add to Cart</button>
+     </form>
+    {{else}}
+    <form action="/carts" method="post">
+        <input type="hidden" name="productId" value ="{{_id}}">
+        <button type ="submit" class ="btn btn-sm btn-danger mx-2 my-2">Add to Cart</button>
+     </form>
+     {{/if }}
+</div>

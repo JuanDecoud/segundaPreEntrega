@@ -3,18 +3,73 @@
 </div>
 <div id="listaProductos" class = "container pt-4">
     <div class = "d-flex flex-wrap">
-        {{#each products}}
-            <div class="card mx-2" style="width: 18rem;">
-                <img class="card-img-top" src={{linkThubnail}} alt="Card image cap" style="object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">{{name}}</h5>
-                    <p class="card-text">{{description}}</p>
+        {{#each docs}}
+            {{#if this.cartId}}
+                <form action="/carts/{{this.cartId}}/products/{{this._id}}"  method="post">
+                    <div class="card mx-2 my-2" >
+                        <img class="card-img-top" src={{this.linkThubnail}} alt="Card image cap" style="object-fit: cover;">
+                        <ul  class="list-group list-group-flush">
+                            <h5 class="card-title">{{this.name}}</h5>
+                            <p class="list-group-item">Envase: {{this.container}}</p>
+                            <p class="list-group-item">Litros: {{this.liters}}</p>
+                            <p class="list-group-item text-green">$ {{this.price}}</p>
+                            <div class ="list-group-item col-6 "> 
+                                <div class="input-group mb-3  mx-2 col-6">
+                                    <div class ="d-inline-flex col-6">
+                                        <p class ="mx-2">Quantity:</p>
+                                        <input type="hidden" name="productId" value={{this._id}}>
+                                        <input type="hidden" name="cartId" value={{this.cartId}}>
+                                        <input type="number" name="quantity" class="form-control col-10" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            <div class ="container">
+                                <button id="btnCart" type="submit" class ="btn btn-sm btn-danger">Add to cart</button>
+                            </div>
+                        </ul>
+                    </form>
+                    <form action="/views/products/details" type ="get">
+                        <input type="hidden" name="productId" value={{this._id}}>
+                        <input type="hidden" name="cartId" value={{this.cartId}}>
+                        <button id="btnCart" type="submit" class ="btn btn-sm btn-danger my-2">Details</button>
+                    </form>
                 </div>
-            </div>
-        {{/each}}
+            {{else}}
+                <div class="card mx-2 my-2" >
+                    <form action="/carts"  method="post"></form>
+                        <img class="card-img-top" src={{this.linkThubnail}} alt="Card image cap" style="object-fit: cover;">
+                        <ul  class="list-group list-group-flush">
+                            <h5 class="card-title">{{this.name}}</h5>
+                            <p class="list-group-item">Envase: {{this.container}}</p>
+                            <p class="list-group-item">Litros: {{this.liters}}</p>
+                            <p class="list-group-item text-warning">$ {{this.price}}</p>
+                            <div class ="list-group-item col-6 "> 
+                                <div class="input-group mb-3  mx-2 col-6">
+                                    <div class ="d-inline-flex col-6">
+                                        <p class ="mx-2">Quantity:</p>
+                                        <input type="hidden" name="productId" value={{this._id}}>
+                                        <input type="hidden" name="productId" value={{this.cartId}}>
+                                        <input type="number" name="quantity" class="form-control col-10" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            <div class ="container">
+                                <button id="btnCart" type="submit" class ="btn btn-sm btn-danger">Add to cart</button>
+                            </div>
+                        </ul>
+                    </form>
+                    <div>
+                        <form action="/views/products/details" method ="get" class ="mx-2">
+                            <input type="hidden" name="productId" value={{this._id}}>
+                            <button id="btnCart" type="submit" class ="btn btn-sm btn-danger my-2 mx-2">Details</button>
+                        </form>
+                    </div>
+                </div>
+               {{/if}} 
+            {{/each}}
     </div>
+    <a href="{{prevLink}}">Anterior</a>
+    <a href="{{nextLink}}">Siguiente</a>
+   
 </div>
-
 
 
 
